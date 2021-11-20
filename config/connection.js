@@ -1,15 +1,11 @@
-const mysql2 = require('mysql2');
-require('dotenv').config();
+const Mysql2 = require('mysql2');
+require("dotenv").config();
 
-const mysql = new mysql2(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-  {
-    host: 'localhost',
-    database:'emptracker_db',
-    user: 'root'
-  }
-);
 
-module.exports = mysql;
+const mysql2 = Mysql2.createConnection({
+  database: process.env.DB_NAME,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+});
+
+module.exports = mysql2;
