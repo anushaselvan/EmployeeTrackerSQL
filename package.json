@@ -1,0 +1,26 @@
+{
+  "name": "employeetrackersql",
+  "version": "1.0.0",
+  "description":"",
+   "main": "server.js",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "inquirer": "^8.2.0",
+    "mysql2": "^2.3.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anushaselvan/EmployeeTrackerSQL.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anushaselvan/EmployeeTrackerSQL/issues"
+  },
+  "homepage": "https://github.com/anushaselvan/EmployeeTrackerSQL#readme"
+}
