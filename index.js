@@ -40,7 +40,6 @@ function previewOptions() {
                  return updateEmployeeRole();
             case "Update employee managers":
                  return updateEmpManagers();
-
             case "View employees by manager":
                  return viewEmpByManagers();
             case "View employees by department":
@@ -298,12 +297,12 @@ function deleteDeptRoleEmp() {
         message: "What do you want to delete?",
         choices: ["Department","Role","Employee"],
     
-}])
-.then((response) => {
-    let answer = response.delete;
-    switch (answer) {
-        case "Department":
-            mysql2.query('SELECT * FROM department', function (err, results) {
+    }])
+    .then((response) => {
+        let answer = response.delete;
+        switch (answer) {
+            case "Department":
+                mysql2.query('SELECT * FROM department', function (err, results) {
                 if (err) throw err;
                 inquirer.prompt({
                 type: "list",
@@ -330,35 +329,34 @@ function deleteDeptRoleEmp() {
                 break;
             
         case "Role":
-        mysql2.query('SELECT * FROM employeerole', function (err, results) {
-            if (err) throw err;
-            inquirer.prompt({
-            type: "list",
-            name: "role",
-            message: "What is the name of the role you want to delete?",
-            choices: function() {
-                for (let i = 0; i < results.length; i++) {
-                resArray.push(results[i].title);
-                }
-            return resArray;
-            },
-            })
-        .then((answer) => { 
-                sql = 'DELETE from employeerole WHERE title=?';
-                mysql2.query(sql, answer.role, function (err, results) {
-                    if (err)
-                        throw err;  
-                    else
-                console.log("\n Role deleted from the database");
-                previewOptions();
-                });
-                });
-        });
-        break;
-    
+                mysql2.query('SELECT * FROM employeerole', function (err, results) {
+                if (err) throw err;
+                inquirer.prompt({
+                type: "list",
+                name: "role",
+                message: "What is the name of the role you want to delete?",
+                choices: function() {
+                    for (let i = 0; i < results.length; i++) {
+                    resArray.push(results[i].title);
+                    }
+                return resArray;
+                },
+                })
+            .then((answer) => { 
+                    sql = 'DELETE from employeerole WHERE title=?';
+                    mysql2.query(sql, answer.role, function (err, results) {
+                        if (err)
+                            throw err;  
+                        else
+                    console.log("\n Role deleted from the database");
+                    previewOptions();
+                    });
+                    });
+            });
+            break;
         
         case "Employee":
-            mysql2.query('SELECT * FROM employee', function (err, results) {
+                mysql2.query('SELECT * FROM employee', function (err, results) {
                 if (err) throw err;
                 inquirer.prompt({
                 type: "list",
@@ -372,7 +370,6 @@ function deleteDeptRoleEmp() {
                 },
                 })
             .then((answer) => { 
-                console.log(answer.empl);
                 let fName = answer.empl.split(" ");
                     sql = 'DELETE from employee WHERE first_name=?';
                     mysql2.query(sql, fName[0], function (err, results) {
@@ -383,13 +380,40 @@ function deleteDeptRoleEmp() {
                     previewOptions();
                     });
                     });
-            });
- } });
-}
+                });
+             } 
+        });
+    }
 
+    function viewBudgetByDept() {
+        mysql2.query('SELECT * FROM department', function (err, results) {
+            if (err) throw err;
+            inquirer.prompt({
+            type: "list",
+            name: "dept",
+            message: "What is the name of the department you want to view the budget?",
+            choices: function() {
+                for (let i = 0; i < results.length; i++) {
+                resArray.push(results[i].department_name);
+                }
+            return resArray;
+            },
+    })
+    .then((answer) => {
+        let deptId = resArray.indexOf(answer.dept) + 1;
+        sql = 'SELECT SUM(salary) AS Budget FROM employeerole WHERE department_id=?'
+        mysql2.query(sql, deptId, function (err, results) {
+            if (err)
+                throw err;  
+            else
+            console.table(results);
+        previewOptions();
+        });
+        });
+});
+    }
 
 function init() {
         previewOptions();
     }
-
-    init();
+init();
