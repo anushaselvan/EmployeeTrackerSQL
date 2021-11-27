@@ -1,6 +1,10 @@
 const inquirer = require("inquirer");
 const mysql2 = require("./config/connection");
 const cTable = require("console.table");
+let sql = "";
+let resArray = [];
+let roleArray = [];
+let empArray = [];
 
 
 function previewOptions() {
@@ -18,7 +22,6 @@ function previewOptions() {
         ]
     }])
     .then((response) => {
-        let sql = "";
         let answer = response.preview;
         switch (answer) {
             case "View all departments":
@@ -53,7 +56,7 @@ function previewOptions() {
         });
 }
 function viewDepartment(){
-        sql = 'SELECT * FROM department';
+        sql = "SELECT * FROM department";
         mysql2.query(sql, function (err, results) {
             if (err)
                 throw err;
@@ -105,6 +108,112 @@ function addDepartment() {
             });
             });
     }
+function addRole() {
+    mysql2.query('SELECT * FROM department', function (err, results) {
+        if (err)
+            throw err;
+        else
+    inquirer.prompt([{
+        type: "input",
+        name: "title",
+        message: "What is the name of the role?",
+    },
+    {
+        type: "input",
+        name: "salary",
+        message: "What is the salary of the role?",
+    },
+    {        
+        type: "list",
+        name: "dept",
+        message: "What department does the role belong to?",
+        choices: function() {
+                    for (let i = 0; i < results.length; i++) {
+                    resArray.push(results[i].department_name);
+                    }
+            return resArray;
+            },
+        },
+    ]) 
+
+    .then((answer) => {
+        let deptName = answer.dept;
+        let deptId = resArray.indexOf(deptName) + 1;
+        sql = 'INSERT INTO employeerole (title, salary, department_id) VALUES (?,?,?)';
+
+        mysql2.query(sql, [answer.title,answer.salary,deptId], function (err, results) {
+            if (err)
+            throw err;  
+        else
+        console.log("\n Added role to the database");
+        console.table(results);
+        previewOptions();
+            
+        });
+    });
+    });
+}
+
+function addEmployee(){
+    mysql2.query('SELECT * FROM employeerole', function (err, roleResults) {
+        if (err)
+            throw err;
+    mysql2.query('SELECT * FROM employee', function (err, managerResults) {
+        if (err)
+            throw err;
+
+    inquirer.prompt([{
+        type: "input",
+        name: "firstname",
+        message: "What is the first name of the employee?",
+    },
+    {
+        type: "input",
+        name: "lastname",
+        message: "What is the last name of the employee?",
+    },
+    {        
+        type: "list",
+        name: "roleid",
+        message: "What is the role of the employee?",
+        choices: function() {
+                for (let i = 0; i < roleResults.length; i++) {
+                roleArray.push(roleResults[i].title);
+                }
+            return roleArray;
+            },
+    },
+    {
+        type: "list",
+        name: "managerid",
+        message: "Who is the manager of this employee?",
+        choices: function(){
+                for (let k = 0; k < managerResults.length; k++) {
+                empArray.push(managerResults[k].first_name);
+                }
+        return empArray;
+        },
+        },
+    ]) 
+    .then((answer) => {
+        let roleId = roleArray.indexOf(answer.roleid) + 1;
+        let managerId = empArray.indexOf(answer.managerid) + 1;
+
+        sql = 'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)';
+
+        mysql2.query(sql, [answer.firstname, answer.lastname, roleId, managerId], function (err, results) {
+            if (err)
+            throw err;  
+        else
+        console.log("\n Added employee to the database");
+        console.table(results);
+        previewOptions();
+            
+        });
+    });
+    });
+});
+}
 
 function init() {
     previewOptions();
