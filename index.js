@@ -40,10 +40,6 @@ function previewOptions() {
                  return updateEmployeeRole();
             case "Update employee managers":
                  return updateEmpManagers();
-            case "View employees by manager":
-                 return viewEmpByManagers();
-            case "View employees by department":
-                 return viewEmpByDept();
             case "Delete departments, roles, and employees":
                  return deleteDeptRoleEmp();
             case "View the total utilized budget of a department":
@@ -385,10 +381,10 @@ function deleteDeptRoleEmp() {
         });
     }
 
-    function viewBudgetByDept() {
+function viewBudgetByDept() {
         mysql2.query('SELECT * FROM department', function (err, results) {
-            if (err) throw err;
-            inquirer.prompt({
+        if (err) throw err;
+        inquirer.prompt({
             type: "list",
             name: "dept",
             message: "What is the name of the department you want to view the budget?",
@@ -397,20 +393,20 @@ function deleteDeptRoleEmp() {
                 resArray.push(results[i].department_name);
                 }
             return resArray;
-            },
-    })
-    .then((answer) => {
-        let deptId = resArray.indexOf(answer.dept) + 1;
-        sql = 'SELECT SUM(salary) AS Budget FROM employeerole WHERE department_id=?'
-        mysql2.query(sql, deptId, function (err, results) {
-            if (err)
-                throw err;  
-            else
-            console.table(results);
-        previewOptions();
+        },
+        })
+        .then((answer) => {
+            let deptId = resArray.indexOf(answer.dept) + 1;
+            sql = 'SELECT SUM(salary) AS Budget FROM employeerole WHERE department_id=?'
+            mysql2.query(sql, deptId, function (err, results) {
+                if (err)
+                    throw err;  
+                else
+                console.table(results);
+            previewOptions();
+            });
         });
         });
-});
     }
 
 function init() {
