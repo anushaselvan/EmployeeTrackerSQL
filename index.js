@@ -2,10 +2,6 @@ const inquirer = require("inquirer");
 const mysql2 = require("./config/connection");
 const cTable = require("console.table");
 let sql = "";
-let resArray = [];
-let roleArray = [];
-let empArray = [];
-
 
 function previewOptions() {
     return inquirer.prompt([{
@@ -13,12 +9,11 @@ function previewOptions() {
         name: "preview",
         message: "What would you like to do?",
         choices: [
-            "View all departments", "View all roles", "quit", "View all employees",
+            "View all departments", "View all roles", "View all employees",
             "Add a department", "Add a role", "Add an employee",
             "Update an employee role", "Update employee managers",
-            "View employees by manager", "View employees by department",
             "Delete departments, roles, and employees",
-            "View the total utilized budget of a department"
+            "View the total utilized budget of a department", "quit"
         ]
     }])
     .then((response) => {
@@ -63,7 +58,7 @@ function viewDepartment(){
     }
 
 function viewRole(){
-        sql = 'SELECT employeerole.id,employeerole.title, employeerole.salary, department.department_name FROM employeerole INNER JOIN department ON employeerole.department_id= department.id';
+        sql = 'SELECT employeerole.id,employeerole.title, employeerole.salary, department.department_name FROM employeerole INNER JOIN department ON employeerole.department_id= department.id ORDER BY id';
         mysql2.query(sql, function (err, results) {
             if (err)
                 throw err;
@@ -97,14 +92,13 @@ function addDepartment() {
                 throw err;
             else
             console.log("\n Added department to the database");
-            console.table(results);
             previewOptions();
-            
             });
             });
     }
 function addRole() {
         mysql2.query('SELECT * FROM department', function (err, results) {
+            let resArray = [];
             if (err)
                 throw err;
             else
@@ -141,15 +135,15 @@ function addRole() {
                 throw err;  
             else
             console.log("\n Added role to the database");
-            console.table(results);
             previewOptions();
-                
-            });
+             });
         });
         });
     }
 
 function addEmployee(){
+    let roleArray = [];
+    let empArray = [];
         mysql2.query('SELECT * FROM employeerole', function (err, roleResults) {
             if (err)
                 throw err;
@@ -184,7 +178,8 @@ function addEmployee(){
             message: "Who is the manager of this employee?",
             choices: function(){
                     for (let k = 0; k < managerResults.length; k++) {
-                    empArray.push(managerResults[k].first_name);
+                    empArray.push(managerResults[k].first_name+ " " +managerResults[k].last_name);
+
                     }
             return empArray;
             },
@@ -200,7 +195,6 @@ function addEmployee(){
                 throw err;  
             else
             console.log("\n Added employee to the database");
-            console.table(results);
             previewOptions();
                 
             });
@@ -209,6 +203,7 @@ function addEmployee(){
         });
     }
 function updateEmployeeRole() {
+    let roleArray = [];
         mysql2.query('SELECT * FROM employeerole', function (err, results) {
             if (err) throw err;
         inquirer.prompt([{
@@ -247,10 +242,9 @@ function updateEmployeeRole() {
             });
         }
 function updateEmpManagers() {
-        sql = `SELECT employee.id, employee.first_name, employee.last_name, employeerole.title, CONCAT(manager.first_name,' ',manager.last_name) AS manager FROM employee LEFT JOIN employeerole ON employee.role_id=employeerole.id LEFT JOIN employee manager on manager.id=employee.manager_id `;
-        mysql2.query(sql, function (err, results) {
+    let resArray = [];
+        mysql2.query('SELECT * from employee', function (err, results) {
             if (err) throw err;
-            console.table(results);
         inquirer.prompt([{
                 type: "input",
                 name: "firstname",
@@ -287,6 +281,7 @@ function updateEmpManagers() {
             });
         }
 function deleteDeptRoleEmp() {
+    let resArray = [];
     inquirer.prompt([{
         type: "list",
         name: "delete",
@@ -327,6 +322,7 @@ function deleteDeptRoleEmp() {
         case "Role":
                 mysql2.query('SELECT * FROM employeerole', function (err, results) {
                 if (err) throw err;
+                let resArray = [];
                 inquirer.prompt({
                 type: "list",
                 name: "role",
@@ -354,6 +350,7 @@ function deleteDeptRoleEmp() {
         case "Employee":
                 mysql2.query('SELECT * FROM employee', function (err, results) {
                 if (err) throw err;
+                let resArray = [];
                 inquirer.prompt({
                 type: "list",
                 name: "empl",
@@ -383,6 +380,7 @@ function deleteDeptRoleEmp() {
 
 function viewBudgetByDept() {
         mysql2.query('SELECT * FROM department', function (err, results) {
+            let resArray = [];
         if (err) throw err;
         inquirer.prompt({
             type: "list",

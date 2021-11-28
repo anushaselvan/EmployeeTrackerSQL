@@ -7,8 +7,7 @@
     "console.table": "^0.10.0",
     "dotenv": "^10.0.0",
     "inquirer": "^8.2.0",
-    "mysql2": "^2.3.3",
-    "named-placeholders": "^1.1.2"
+    "mysql2": "^2.3.3"
   },
   "devDependencies": {},
   "scripts": {
