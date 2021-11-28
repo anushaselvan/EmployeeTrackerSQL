@@ -37,6 +37,7 @@
  - Check out this [video](https://watch.screencastify.com/v/cCN1r0p23NKBakJNd0eg) for more details.
  - Some screenshots of the application-
 
+![EmployeeTracker](https://user-images.githubusercontent.com/84444052/143764510-c8b0da64-031c-4ade-bc0d-04c69d42d392.png)
 
 ## Contribution
    Submit a Pull Request to collaborate!
