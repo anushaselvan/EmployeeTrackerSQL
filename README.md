@@ -11,7 +11,7 @@
  - Add Role
  - Add Employee
  - Update Employee Role
-- Update Employee Manager
+ - Update Employee Manager
  - Delete Department
  - Delete Role
  - Delete Employee
@@ -34,8 +34,9 @@
 
 ## Usage
  - Run the application using the command- node index.js and follow the prompts. 
- - Check out this video for more details.
+ - Check out this [video](https://watch.screencastify.com/v/cCN1r0p23NKBakJNd0eg) for more details.
  - Some screenshots of the application-
+
 
 ## Contribution
    Submit a Pull Request to collaborate!
